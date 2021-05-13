@@ -24,8 +24,13 @@ df6 = DataFrame(CSV.File( x6 , header = false ))
 df7 = DataFrame(CSV.File( x7 , header = false ))
 df8 = DataFrame(CSV.File( x8 , header = false ))
 
+rename!(df6, col_names)
 # Count the unique elements in the column
-u = unique( df6[ :, "pid" ] )
-d=Dict([(i,count(x->x==i,y)) for i in u])
+sample6 = df6[ :, "pid" ]
+u = unique( sample6 )
+d = Dict( [( i , count( x->x==i , sample6 )) for i in u])
 # The count of positrons.
 println("count for -11 is $(d[-11])")
+posi_count = d[-11]
+# The count of electrons.
+println("count for 11 (electrons) is $(d[11])")
