@@ -8,8 +8,17 @@ df2 = DataFrame(CSV.File("S:/STAT 196K/Final Project/data_samples/ff3bfb52-f56f-
 
 # Want to see the column corresponding to the truth label of the object.
 a = df2[ : , 10 ]
-
 b = df2[:,11]
+# Checking the column names
+show( column_names )
 
 # Exclamation is a push that will impose new changes on df2.
 rename!(df2, column_names)
+# Need the following libraries.
+using MultivariateStats
+using Plots
+using Distributions
+
+plotly()
+scatter( df[:,2], df[:,3], df[:,4] )
+# Will give a scatter plot of the location of the particle in this event.
