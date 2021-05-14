@@ -39,6 +39,7 @@ function extract_positron( csv_file )
   k2  = Clustering.kmeans( xyz, nclusters )
   grp1 = k2.assignments .== 1
   grp2 = k2.assignments .== 2
+  plotly()
   scatter( eta2[grp1], phi2[grp1], pt2[grp1], label = "group 1")
   scatter!( eta2[grp2], phi2[grp2], pt2[grp2], label = "group 2")
 
