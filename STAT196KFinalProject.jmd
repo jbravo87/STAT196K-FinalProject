@@ -1,0 +1,35 @@
+### Jose Bravo
+### STAT 196K - Big Data - Dr. Fitzgerald
+### May 14, 2021
+
+# Introduction
+For this project I used open data made available from the [ATLAS](http://opendata.cern.ch/record/15009) particle physics experiemtn at [CERN](https://home.cern/), the European Organization for Nuclear Research.
+Per the ATLAS PUB [Note](http://cds.cern.ch/record/2753414/files/ATL-PHYS-PUB-2021-002.pdf), ATlas is an experiment at the Large Hadron Collider in Europe. ATLAS is a multi-purpose detector with symmetric cylindrical geometry. It has an inner detector which contains three subdetectors. The objective of these detectors is to measure the collisions of particles traveling at relativistic (near speed-of-light) speeds.
+Per the note, the events were fully simulated using the ATLAS Geant4 which is a simulator developed and tested for physics experiments. The actual simulation infrastructure was employed at the Theta supercomupter at the Argonned National Laboratory to get the data. The data simulates specific detector readout channels to study energy clusters and particle trajectories.
+## Motivation
+The data set included an approximately 10 GB zip file full of CSV data. Each respective CSV file is its own collision event. Though, the data includes location of the collisions in the traditional Cartesina coordinate system, recall that Atlas has cylindrical symmetry. Symmetry is something physicists constantly use. So in this instance it is natural to go from the Cartesian x, y, and z to the the cylindrical coordinate
+system which includes the use of \\left( \\r, \\phi \\right) where \\r is some radial distance and \\phi is the azimuthal angle. There is also a third variable, the polar angle ``\theta`` which is embedded in the quantity pseudorapidity ``\eta`` which is defined as \\eta = -\\ln \\tan \\left( \\frac{\\theta}{2} \\right).
+For this project I wanted to study the decay of so-called Z bosons which is an elementary particle defined by the [Standard Model](https://en.wikipedia.org/wiki/Particle_physics) of particle physics. Per theory, the Z boson in these collisions is expected to decay into its constituent parts which include the electron and its antimatter counterpart the positron both of which are categorized as leptons in the Standard Model. Under the
+particle ID "pid" column in the dataset, the expected readouts are -99 for background noice, 11 for electrons, -11 for positrons, and 0 for jets which are showers of hadrons which are quarks and gluons from the particle collisions. For this assignment, the particle of interest was arbitrarily chosen to be the positron. This would one of the filters used in the dataset. I wanted to see a relationship between displacement/location (measured via
+pseudorapidity and azimuthal angle) and energy (measured via traverse momentum in GeV). From physics, we recall momentum ``p`` as the velocity scaled my some mass, i.e. ``p = mv``. In high-energy physics, the traverse momentum is associated with the physics occuring at the origin of the collision.
+
+# Method
+The rest of the project is devoted to the analysis of the data set. I used Julia programming to create a script so as to filter the larger data set into the information pertinent to my project.
+
+## Function of x, y, and z
+I first used sftp from my EC2 instance in Amazon Web Services to obtain some files to test. I wanted to plot the trajectory of one event in the traditional Cartesian coordinate sytem.
+```julia
+using DataFrames
+using CSV
+using Plots
+using MultivariateStats
+using Distributions
+
+column_names = [ "hwid", "idx","x" , "y" , "z" , "r", "eta", "phi", "raw", "pid", "n", "truth_eta", "truth_phi", "truth_pt", "trk_good"," trk_barcode", "trk_pt" ]
+dataframe = DataFrame(CSV.File("K:/messenger_bag3/STAT 196K/Final Project/data_samples/84b56e9c-3025-48d4-a295-961f5848c2fc_nevts1_evtid00000053_graphcnn_2l_3j.csv", header = false ))
+rename!( dataframe, column_names )
+plotly()
+scatter( dataframe[:,4], dataframe[:,5], dataframe[:,3] , legend = false )
+# Will give a scatter plot of the location of the particle in this event.
+```
+The interactive plots shows the cylindrical shape of where the collisions took place. The different channels give different measurements at different locations, but ultimately the
